@@ -6,6 +6,7 @@ import logger from './utils/logger';
 import authRoutes from './routes/authRoutes';
 import contentRoutes from './routes/contentRoutes';
 import tiktokRoutes from './routes/tiktokRoutes';
+import analyticsRoutes from './routes/analyticsRoutes';
 import tiktokScheduler from './scheduler/tiktokScheduler';
 
 dotenv.config();
@@ -37,6 +38,7 @@ app.get('/health', (req: Request, res: Response) => {
 app.use('/auth', authRoutes);
 app.use('/content', contentRoutes);
 app.use('/tiktok', tiktokRoutes);
+app.use('/analytics', analyticsRoutes);
 
 // Error handling middleware
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
