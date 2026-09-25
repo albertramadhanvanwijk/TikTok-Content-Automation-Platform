@@ -23,6 +23,7 @@
   "license": "MIT",
   "dependencies": {
     "@types/cookie-parser": "^1.4.10",
+    "@types/uuid": "^11.0.0",
     "axios": "^1.6.0",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.7",
@@ -31,11 +32,12 @@
     "express": "^4.18.2",
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
-    "multer": "^1.4.4",
+    "multer": "^2.4.0",
     "node-cron": "^3.0.2",
     "pg": "^8.11.1",
     "sharp": "^0.33.0",
     "socket.io": "^4.7.2",
+    "uuid": "^14.0.2",
     "winston": "^3.11.0"
   },
   "devDependencies": {
