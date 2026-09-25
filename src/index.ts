@@ -5,6 +5,8 @@ import dotenv from 'dotenv';
 import logger from './utils/logger';
 import authRoutes from './routes/authRoutes';
 import contentRoutes from './routes/contentRoutes';
+import tiktokRoutes from './routes/tiktokRoutes';
+import tiktokScheduler from './scheduler/tiktokScheduler';
 
 dotenv.config();
 
@@ -34,6 +36,7 @@ app.get('/health', (req: Request, res: Response) => {
 // Routes
 app.use('/auth', authRoutes);
 app.use('/content', contentRoutes);
+app.use('/tiktok', tiktokRoutes);
 
 // Error handling middleware
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
@@ -54,6 +57,32 @@ app.use((req: Request, res: Response) => {
 // Start server
 const server = app.listen(PORT, () => {
   logger.info(`Server running on port ${PORT}`);
+  
+  // Start TikTok scheduler
+  try {
+    tiktokScheduler.start();
+  } catch (error) {
+    logger.error('Failed to start TikTok scheduler', error);
+  }
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  logger.info('SIGTERM received, shutting down gracefully');
+  tiktokScheduler.stop();
+  server.close(() => {
+    logger.info('Server closed');
+    process.exit(0);
+  });
+});
+
+process.on('SIGINT', () => {
+  logger.info('SIGINT received, shutting down gracefully');
+  tiktokScheduler.stop();
+  server.close(() => {
+    logger.info('Server closed');
+    process.exit(0);
+  });
 });
 
 export default app;
