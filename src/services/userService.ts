@@ -1,0 +1,124 @@
+import authService from './authService';
+import userRepository from '../repositories/UserRepository';
+import { CreateUserInput, UserResponse } from '../models/User';
+import logger from '../utils/logger';
+
+class UserService {
+  async register(input: CreateUserInput): Promise<UserResponse> {
+    try {
+      // Validate password strength
+      const validation = authService.validatePassword(input.password);
+      if (!validation.isValid) {
+        throw new Error(`Password validation failed: ${validation.errors.join(', ')}`);
+      }
+
+      // Check if email already exists
+      const existingEmail = await userRepository.findByEmail(input.email);
+      if (existingEmail) {
+        throw new Error('Email already registered');
+      }
+
+      // Check if username already exists
+      const existingUsername = await userRepository.findByUsername(input.username);
+      if (existingUsername) {
+        throw new Error('Username already taken');
+      }
+
+      // Hash password
+      const passwordHash = await authService.hashPassword(input.password);
+
+      // Create user
+      const user = await userRepository.create(input, passwordHash);
+
+      logger.info(`User created: ${user.id} (${user.email})`);
+
+      // Return response without password hash
+      return userRepository.toResponseObject(user);
+    } catch (error) {
+      logger.error('Error registering user', error);
+      throw error;
+    }
+  }
+
+  async login(email: string, password: string): Promise<{ user: UserResponse; tokens: any }> {
+    try {
+      // Find user by email
+      const user = await userRepository.findByEmail(email);
+      if (!user) {
+        throw new Error('Invalid email or password');
+      }
+
+      // Check if user is active
+      if (user.status !== 'active') {
+        throw new Error(`User account is ${user.status}`);
+      }
+
+      // Verify password
+      const isPasswordValid = await authService.comparePassword(password, user.password_hash);
+      if (!isPasswordValid) {
+        throw new Error('Invalid email or password');
+      }
+
+      // Generate tokens
+      const tokens = authService.generateTokens({
+        userId: user.id,
+        email: user.email,
+      });
+
+      // Update last login
+      await userRepository.updateLastLogin(user.id);
+
+      logger.info(`User logged in: ${user.id} (${user.email})`);
+
+      const userResponse = await userRepository.toResponseObject(user);
+
+      return {
+        user: userResponse,
+        tokens,
+      };
+    } catch (error) {
+      logger.error('Error logging in user', error);
+      throw error;
+    }
+  }
+
+  async getProfile(userId: string): Promise<UserResponse> {
+    try {
+      const user = await userRepository.findById(userId);
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      return userRepository.toResponseObject(user);
+    } catch (error) {
+      logger.error('Error getting user profile', error);
+      throw error;
+    }
+  }
+
+  async validateEmail(email: string): Promise<boolean> {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  async validateUsername(username: string): Promise<{ isValid: boolean; errors: string[] }> {
+    const errors: string[] = [];
+
+    if (username.length < 3) {
+      errors.push('Username must be at least 3 characters long');
+    }
+    if (username.length > 50) {
+      errors.push('Username must be at most 50 characters long');
+    }
+    if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
+      errors.push('Username can only contain letters, numbers, underscores, and hyphens');
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors,
+    };
+  }
+}
+
+export default new UserService();
