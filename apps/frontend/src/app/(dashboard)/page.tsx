@@ -24,8 +24,8 @@ export default function DashboardPage() {
       try {
         setLoading(true);
         const response = await apiClient.get<any>(API_ENDPOINTS.ANALYTICS.DASHBOARD);
-        if (response.data) {
-          setData(response.data);
+        if (response.data?.dashboard) {
+          setData(response.data.dashboard);
         }
       } catch (err: any) {
         setError(err.message || 'Failed to load dashboard data');

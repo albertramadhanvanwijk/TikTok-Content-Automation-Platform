@@ -5,6 +5,7 @@ import logger from '../utils/logger';
 export interface AuthRequest extends Request {
   userId?: string;
   email?: string;
+  params: { [key: string]: string };
 }
 
 export const authMiddleware = (
@@ -13,7 +14,14 @@ export const authMiddleware = (
   next: NextFunction
 ): void => {
   try {
-    const token = req.headers.authorization?.split(' ')[1];
+    // Try to get token from Authorization header first
+    let token = req.headers.authorization?.split(' ')[1];
+    
+    // If not in header, try cookies
+    if (!token && req.cookies) {
+      logger.debug(`Cookies received: ${JSON.stringify(req.cookies)}`);
+      token = req.cookies.accessToken;
+    }
 
     if (!token) {
       res.status(401).json({
@@ -45,11 +53,17 @@ export const authMiddleware = (
 
 export const optionalAuthMiddleware = (
   req: AuthRequest,
-  res: Response,
+  _res: Response,
   next: NextFunction
 ): void => {
   try {
-    const token = req.headers.authorization?.split(' ')[1];
+    // Try to get token from Authorization header first
+    let token = req.headers.authorization?.split(' ')[1];
+    
+    // If not in header, try cookies
+    if (!token && req.cookies) {
+      token = req.cookies.accessToken;
+    }
 
     if (token) {
       const payload = authService.verifyToken(token);

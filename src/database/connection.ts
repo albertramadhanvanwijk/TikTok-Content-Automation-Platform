@@ -1,5 +1,5 @@
 import { Pool, QueryResult } from 'pg';
-import databaseConfig from './database';
+import databaseConfig from '../config/database';
 import logger from '../utils/logger';
 
 class Database {

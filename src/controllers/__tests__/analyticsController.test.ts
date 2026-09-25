@@ -1,6 +1,5 @@
 import request from 'supertest';
-import app from '../../index';
-import analyticsService from '../../services/analyticsService';
+import app from '../../dist/index';
 
 jest.mock('../../services/analyticsService');
 

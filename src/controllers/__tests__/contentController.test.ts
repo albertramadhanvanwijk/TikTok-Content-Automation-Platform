@@ -1,6 +1,5 @@
 import request from 'supertest';
-import app from '../../index';
-import contentService from '../../services/contentService';
+import app from '../../dist/index';
 
 jest.mock('../../services/contentService');
 
@@ -323,7 +322,7 @@ describe('ContentController', () => {
       ];
 
       for (const endpoint of endpoints) {
-        const response = await request(app)[endpoint.method](endpoint.path);
+        const response = await (request(app) as any)[endpoint.method](endpoint.path);
         expect(response.status).toBe(401);
       }
     });

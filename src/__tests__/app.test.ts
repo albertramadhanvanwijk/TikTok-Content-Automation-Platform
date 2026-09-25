@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app from '../../index';
+import app from '../../dist/index';
 
 describe('Express App', () => {
   describe('Health Check Endpoint', () => {
@@ -62,7 +62,7 @@ describe('Express App', () => {
     });
 
     it('should handle different HTTP methods', async () => {
-      const methods = ['get', 'post', 'put', 'delete'];
+      const methods = ['get', 'post', 'put', 'delete'] as const;
 
       for (const method of methods) {
         const response = await request(app)[method]('/health');

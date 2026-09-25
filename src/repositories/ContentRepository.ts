@@ -251,6 +251,23 @@ class ContentRepository {
     }
   }
 
+  async updateCarouselSlidesCount(carouselId: string): Promise<void> {
+    const query = `
+      UPDATE carousels
+      SET slides_count = (
+        SELECT COUNT(*) FROM slides WHERE carousel_id = $1
+      ), updated_at = CURRENT_TIMESTAMP
+      WHERE id = $1
+    `;
+
+    try {
+      await database.query(query, [carouselId]);
+    } catch (error) {
+      logger.error('Error updating carousel slides count', error);
+      throw error;
+    }
+  }
+
   async updateSlide(slideId: string, input: Partial<CreateSlideInput>): Promise<Slide> {
     const updates: string[] = [];
     const values: any[] = [];

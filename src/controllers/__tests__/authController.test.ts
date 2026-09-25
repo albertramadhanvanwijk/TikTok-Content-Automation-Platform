@@ -1,7 +1,5 @@
 import request from 'supertest';
-import app from '../../index';
-import authController from '../../controllers/AuthController';
-import userService from '../../services/userService';
+import app from '../../dist/index';
 
 jest.mock('../../services/userService');
 

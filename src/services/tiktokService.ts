@@ -140,7 +140,7 @@ class TikTokService {
       const publishId = initResponse.data.data.publish_id;
 
       // Upload video file
-      const uploadResponse = await axios.put(uploadUrl, params.video_file, {
+      await axios.put(uploadUrl, params.video_file, {
         headers: {
           'Content-Type': 'video/mp4',
         },

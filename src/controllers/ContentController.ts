@@ -133,11 +133,13 @@ class ContentController {
 
       res.status(200).json({
         status: 'success',
-        data: result,
-        pagination: {
-          limit,
-          offset,
-          total: result.total,
+        data: {
+          items: result.data,
+          pagination: {
+            limit,
+            offset,
+            total: result.total,
+          },
         },
       });
     } catch (error: any) {

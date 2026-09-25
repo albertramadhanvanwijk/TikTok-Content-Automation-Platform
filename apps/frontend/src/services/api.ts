@@ -101,7 +101,8 @@ class ApiClient {
 
   private setTokenInCookie(token: string): void {
     if (typeof document === 'undefined') return;
-    document.cookie = `${JWT_COOKIE_NAME}=${encodeURIComponent(token)}; path=/; max-age=604800; secure; samesite=strict`;
+    const isProduction = window.location.protocol === 'https:';
+    document.cookie = `${JWT_COOKIE_NAME}=${encodeURIComponent(token)}; path=/; max-age=604800; ${isProduction ? 'secure; samesite=strict' : 'samesite=lax'}`;
   }
 
   private clearTokenFromCookie(): void {

@@ -223,7 +223,7 @@ class NotionService {
    * Helper: Extract title from properties
    */
   private extractTitle(properties: Record<string, any>): string {
-    for (const [key, value] of Object.entries(properties)) {
+    for (const [_key, value] of Object.entries(properties)) {
       if (value.type === 'title' && value.title?.length > 0) {
         return value.title.map((t: any) => t.plain_text).join('');
       }

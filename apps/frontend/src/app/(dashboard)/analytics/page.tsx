@@ -27,8 +27,8 @@ export default function AnalyticsPage() {
       try {
         setLoading(true);
         const response = await apiClient.get<any>(`${API_ENDPOINTS.ANALYTICS.DASHBOARD}?period=${period}`);
-        if (response.data) {
-          setData(response.data);
+        if (response.data?.dashboard) {
+          setData(response.data.dashboard);
         }
       } catch (err: any) {
         setError(err.message || 'Failed to load analytics');

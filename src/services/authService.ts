@@ -5,6 +5,7 @@ import logger from '../utils/logger';
 export interface AuthPayload {
   userId: string;
   email: string;
+  type?: 'access' | 'refresh';
 }
 
 export interface Tokens {
@@ -40,13 +41,13 @@ class AuthService {
 
   generateTokens(payload: AuthPayload): Tokens {
     try {
-      const accessToken = jwt.sign(payload, this.jwtSecret, {
+      const accessToken = jwt.sign({ ...payload, type: 'access' }, this.jwtSecret, {
         expiresIn: this.jwtExpire,
-      });
+      } as jwt.SignOptions);
 
-      const refreshToken = jwt.sign(payload, this.jwtSecret, {
+      const refreshToken = jwt.sign({ ...payload, type: 'refresh' }, this.jwtSecret, {
         expiresIn: '30d',
-      });
+      } as jwt.SignOptions);
 
       return { accessToken, refreshToken };
     } catch (error) {

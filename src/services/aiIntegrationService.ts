@@ -1,7 +1,6 @@
 import notionService from './notionService';
 import openaiService from './openaiService';
 import contentRepository from '../repositories/ContentRepository';
-import { CreateCarouselInput, CreateSlideInput } from '../models/Content';
 import logger from '../utils/logger';
 
 class AIIntegrationService {

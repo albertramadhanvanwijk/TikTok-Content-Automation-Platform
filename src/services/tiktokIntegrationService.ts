@@ -9,7 +9,7 @@ class TikTokIntegrationService {
   /**
    * Connect TikTok account (OAuth flow)
    */
-  async connectAccount(userId: string, code: string, redirectUri: string) {
+  async connectAccount(userId: string, code: string, _redirectUri: string) {
     try {
       // Get access token using authorization code
       const tokenResponse = await tiktokService.getAccessToken(code);

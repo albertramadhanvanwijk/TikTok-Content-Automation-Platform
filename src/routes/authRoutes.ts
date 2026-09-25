@@ -19,6 +19,18 @@ router.post('/register', (req, res) => authController.register(req, res));
 router.post('/login', (req, res) => authController.login(req, res));
 
 /**
+ * POST /auth/refresh
+ * Refresh access token using refresh token cookie
+ */
+router.post('/refresh', (req, res) => authController.refresh(req, res));
+
+/**
+ * POST /auth/logout
+ * Logout user - clears auth cookies
+ */
+router.post('/logout', (req, res) => authController.logout(req, res));
+
+/**
  * GET /auth/profile
  * Get current user profile (requires auth)
  * Headers: { Authorization: "Bearer <token>" }

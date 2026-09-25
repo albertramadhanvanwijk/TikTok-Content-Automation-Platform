@@ -35,7 +35,7 @@ class TikTokScheduler {
     try {
       if (this.uploadJobTask) {
         this.uploadJobTask.stop();
-        this.uploadJobTask.destroy();
+        this.uploadJobTask = null;
         logger.info('TikTok scheduler stopped');
       }
     } catch (error) {

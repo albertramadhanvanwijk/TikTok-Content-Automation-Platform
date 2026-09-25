@@ -4,6 +4,31 @@ import { AuthRequest } from '../middleware/authMiddleware';
 import logger from '../utils/logger';
 
 class AuthController {
+  private setAuthCookies(res: Response, accessToken: string, refreshToken: string): void {
+    const isProduction = process.env.NODE_ENV === 'production';
+    
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? 'strict' : 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      path: '/',
+    });
+    
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? 'strict' : 'lax',
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+      path: '/',
+    });
+  }
+
+  private clearAuthCookies(res: Response): void {
+    res.clearCookie('accessToken', { path: '/' });
+    res.clearCookie('refreshToken', { path: '/' });
+  }
+
   async register(req: Request, res: Response): Promise<void> {
     try {
       const { username, email, password, full_name } = req.body;
@@ -50,7 +75,13 @@ class AuthController {
         full_name,
       });
 
+      // Generate tokens
+      const tokens = await userService.login(email, password);
+
       logger.info(`User registered: ${user.id}`);
+
+      // Set auth cookies
+      this.setAuthCookies(res, tokens.tokens.accessToken, tokens.tokens.refreshToken);
 
       res.status(201).json({
         status: 'success',
@@ -88,6 +119,9 @@ class AuthController {
 
       logger.info(`User logged in: ${user.id}`);
 
+      // Set auth cookies
+      this.setAuthCookies(res, tokens.accessToken, tokens.refreshToken);
+
       res.status(200).json({
         status: 'success',
         data: {
@@ -97,13 +131,47 @@ class AuthController {
       });
     } catch (error: any) {
       logger.error('Login error', error);
-      res.status(401).json({
+      const status = error.message.includes('not found') ? 404 : 401;
+      res.status(status).json({
         error: {
           message: error.message || 'Login failed',
-          status: 401,
+          status,
         },
       });
     }
+  }
+
+  async refresh(req: Request, res: Response): Promise<void> {
+    try {
+      const refreshToken = req.cookies?.refreshToken || req.body.refreshToken;
+      
+      if (!refreshToken) {
+        res.status(401).json({
+          error: { message: 'Refresh token required', status: 401 },
+        });
+        return;
+      }
+
+      const tokens = await userService.refreshToken(refreshToken);
+      
+      this.setAuthCookies(res, tokens.accessToken, tokens.refreshToken);
+
+      res.status(200).json({
+        status: 'success',
+        data: { tokens },
+      });
+    } catch (error: any) {
+      logger.error('Token refresh error', error);
+      this.clearAuthCookies(res);
+      res.status(401).json({
+        error: { message: 'Invalid refresh token', status: 401 },
+      });
+    }
+  }
+
+  async logout(_req: Request, res: Response): Promise<void> {
+    this.clearAuthCookies(res);
+    res.status(200).json({ status: 'success', message: 'Logged out' });
   }
 
   async getProfile(req: AuthRequest, res: Response): Promise<void> {

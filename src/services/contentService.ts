@@ -198,6 +198,7 @@ class ContentService {
       const slide = await contentRepository.createSlide(carouselId, input);
 
       // Update carousel slides count
+      await contentRepository.updateCarouselSlidesCount(carouselId);
       const slides = await contentRepository.getCarouselSlides(carouselId);
       logger.info(
         `Slide created: ${slide.id} for carousel ${carouselId}, total slides: ${slides.length}`

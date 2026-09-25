@@ -1,0 +1,641 @@
+{
+  "info": {
+    "name": "TikTok Content Automation API",
+    "description": "Complete API testing collection for TikTok Content Automation Platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/health",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["health"]
+        }
+      }
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"testuser@example.com\",\n  \"username\": \"testuser123\",\n  \"password\": \"SecurePass123!\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/auth/register",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"testuser@example.com\",\n  \"password\": \"SecurePass123!\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/auth/login",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_JWT_TOKEN"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/auth/profile",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["auth", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_JWT_TOKEN"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/auth/refresh",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["auth", "refresh"]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_JWT_TOKEN"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/auth/logout",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["auth", "logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Content Management",
+      "item": [
+        {
+          "name": "Get All Carousels",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_JWT_TOKEN"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/content/carousels?page=1&limit=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["content", "carousels"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Carousel",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_JWT_TOKEN"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Trading Psychology Basics\",\n  \"description\": \"Learn the fundamentals of trading psychology\",\n  \"style\": \"professional\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/content/carousels",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["content", "carousels"]
+            }
+          }
+        },
+        {
+          "name": "Get Carousel Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_JWT_TOKEN"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/content/carousels/CAROUSEL_ID",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["content", "carousels", "CAROUSEL_ID"]
+            }
+          }
+        },
+        {
+          "name": "Update Carousel",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_JWT_TOKEN"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Advanced Trading Psychology\",\n  \"description\": \"Advanced concepts in trading psychology\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/content/carousels/CAROUSEL_ID",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["content", "carousels", "CAROUSEL_ID"]
+            }
+          }
+        },
+        {
+          "name": "Delete Carousel",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_JWT_TOKEN"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/content/carousels/CAROUSEL_ID",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["content", "carousels", "CAROUSEL_ID"]
+            }
+          }
+        },
+        {
+          "name": "Add Slide",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_JWT_TOKEN"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"slide_number\": 1,\n  \"title\": \"Introduction\",\n  \"content\": \"Welcome to trading psychology basics\",\n  \"style_data\": {\n    \"background_color\": \"#030712\",\n    \"text_color\": \"#FFFFFF\",\n    \"font\": \"Arial\"\n  }\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/content/carousels/CAROUSEL_ID/slides",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["content", "carousels", "CAROUSEL_ID", "slides"]
+            }
+          }
+        },
+        {
+          "name": "Publish Carousel",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_JWT_TOKEN"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/content/carousels/CAROUSEL_ID/publish",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["content", "carousels", "CAROUSEL_ID", "publish"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "AI Features",
+      "item": [
+        {
+          "name": "Generate Carousel from Topic",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_JWT_TOKEN"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"topic\": \"Risk Management in Trading\",\n  \"style\": \"educational\",\n  \"slides_count\": 5\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/ai/generate-carousel",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["ai", "generate-carousel"]
+            }
+          }
+        },
+        {
+          "name": "Get Design Suggestions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_JWT_TOKEN"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/ai/design-suggestion?topic=Trading&style=professional",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["ai", "design-suggestion"],
+              "query": [
+                {
+                  "key": "topic",
+                  "value": "Trading"
+                },
+                {
+                  "key": "style",
+                  "value": "professional"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Generate Hashtags",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_JWT_TOKEN"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/ai/generate-hashtags?title=Trading%20Tips&topic=Finance",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["ai", "generate-hashtags"],
+              "query": [
+                {
+                  "key": "title",
+                  "value": "Trading Tips"
+                },
+                {
+                  "key": "topic",
+                  "value": "Finance"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Setup Notion Integration",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_JWT_TOKEN"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notion_database_id\": \"YOUR_NOTION_DB_ID\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/ai/notion/setup",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["ai", "notion", "setup"]
+            }
+          }
+        },
+        {
+          "name": "Sync from Notion",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_JWT_TOKEN"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notion_database_id\": \"YOUR_NOTION_DB_ID\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/ai/notion/sync",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["ai", "notion", "sync"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "TikTok Integration",
+      "item": [
+        {
+          "name": "Get OAuth URL",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_JWT_TOKEN"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/tiktok/auth-url",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["tiktok", "auth-url"]
+            }
+          }
+        },
+        {
+          "name": "Connect TikTok Account",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_JWT_TOKEN"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"OAUTH_CODE_FROM_TIKTOK\",\n  \"state\": \"STATE_FROM_TIKTOK\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/tiktok/connect",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["tiktok", "connect"]
+            }
+          }
+        },
+        {
+          "name": "Get Connected Accounts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_JWT_TOKEN"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/tiktok/accounts",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["tiktok", "accounts"]
+            }
+          }
+        },
+        {
+          "name": "Upload Carousel to TikTok",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_JWT_TOKEN"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"carousel_id\": \"CAROUSEL_ID\",\n  \"tiktok_account_id\": \"TIKTOK_ACCOUNT_ID\",\n  \"caption\": \"Check out this carousel!\",\n  \"hashtags\": [\"#trading\", \"#finance\"]\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/tiktok/upload-jobs",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["tiktok", "upload-jobs"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Analytics",
+      "item": [
+        {
+          "name": "Dashboard Metrics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_JWT_TOKEN"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/analytics/dashboard",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["analytics", "dashboard"]
+            }
+          }
+        },
+        {
+          "name": "Carousel Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_JWT_TOKEN"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/analytics/carousels/CAROUSEL_ID",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["analytics", "carousels", "CAROUSEL_ID"]
+            }
+          }
+        },
+        {
+          "name": "Performance Summary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_JWT_TOKEN"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/analytics/performance-summary?start_date=2026-09-01&end_date=2026-09-25",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["analytics", "performance-summary"],
+              "query": [
+                {
+                  "key": "start_date",
+                  "value": "2026-09-01"
+                },
+                {
+                  "key": "end_date",
+                  "value": "2026-09-25"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Top Content",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_JWT_TOKEN"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/analytics/top-content?limit=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["analytics", "top-content"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -96,6 +96,32 @@ class UserService {
     }
   }
 
+  async refreshToken(refreshToken: string): Promise<{ accessToken: string; refreshToken: string }> {
+    try {
+      const payload = authService.verifyToken(refreshToken);
+      
+      if (!payload || payload.type !== 'refresh') {
+        throw new Error('Invalid refresh token');
+      }
+
+      const user = await userRepository.findById(payload.userId);
+      if (!user || user.status !== 'active') {
+        throw new Error('User not found or inactive');
+      }
+
+      const tokens = authService.generateTokens({
+        userId: user.id,
+        email: user.email,
+      });
+
+      logger.info(`Token refreshed for user: ${user.id}`);
+      return tokens;
+    } catch (error) {
+      logger.error('Error refreshing token', error);
+      throw error;
+    }
+  }
+
   async validateEmail(email: string): Promise<boolean> {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);

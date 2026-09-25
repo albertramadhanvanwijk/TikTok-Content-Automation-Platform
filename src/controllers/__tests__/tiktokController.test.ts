@@ -1,7 +1,5 @@
 import request from 'supertest';
-import app from '../../index';
-import tiktokIntegrationService from '../../services/tiktokIntegrationService';
-import tiktokService from '../../services/tiktokService';
+import app from '../../dist/index';
 
 jest.mock('../../services/tiktokIntegrationService');
 jest.mock('../../services/tiktokService');
@@ -172,7 +170,7 @@ describe('TikTokController', () => {
       ];
 
       for (const endpoint of endpoints) {
-        const response = await request(app)[endpoint.method](endpoint.path);
+        const response = await (request(app) as any)[endpoint.method](endpoint.path);
         expect(response.status).toBe(401);
       }
     });
