@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import dotenv from 'dotenv';
 import logger from './utils/logger';
 import authRoutes from './routes/authRoutes';
+import contentRoutes from './routes/contentRoutes';
 
 dotenv.config();
 
@@ -30,8 +31,9 @@ app.get('/health', (req: Request, res: Response) => {
   });
 });
 
-// Auth routes
+// Routes
 app.use('/auth', authRoutes);
+app.use('/content', contentRoutes);
 
 // Error handling middleware
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
