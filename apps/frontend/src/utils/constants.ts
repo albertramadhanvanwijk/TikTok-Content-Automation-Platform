@@ -3,6 +3,7 @@ export const API_ENDPOINTS = {
     REGISTER: '/auth/register',
     LOGIN: '/auth/login',
     PROFILE: '/auth/profile',
+    CHANGE_PASSWORD: '/auth/change-password',
   },
   CONTENT: {
     CAROUSELS: '/content/carousels',

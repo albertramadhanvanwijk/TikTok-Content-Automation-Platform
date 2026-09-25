@@ -31,11 +31,29 @@ router.post('/refresh', (req, res) => authController.refresh(req, res));
 router.post('/logout', (req, res) => authController.logout(req, res));
 
 /**
+ * PUT /auth/profile
+ * Update user profile
+ * Body: { full_name, email }
+ */
+router.put('/profile', authMiddleware, (req, res) =>
+  authController.updateProfile(req as any, res)
+);
+
+/**
+ * POST /auth/change-password
+ * Change user password
+ * Body: { current_password, new_password }
+ */
+router.post('/change-password', authMiddleware, (req, res) =>
+  authController.changePassword(req as any, res)
+);
+
+/**
  * GET /auth/profile
  * Get current user profile (requires auth)
  * Headers: { Authorization: "Bearer <token>" }
  */
-router.get('/profile', authMiddleware, (req, res) => 
+router.get('/profile', authMiddleware, (req, res) =>
   authController.getProfile(req as any, res)
 );
 

@@ -20,6 +20,8 @@ interface AuthState {
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   fetchProfile: () => Promise<void>;
+  updateProfile: (data: { full_name: string; email: string }) => Promise<void>;
+  changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
   clearError: () => void;
 }
 
@@ -96,6 +98,38 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     } catch (error: any) {
       const errorMessage = error.response?.data?.error?.message || 'Failed to fetch profile';
       set({ error: errorMessage, isAuthenticated: false });
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  updateProfile: async (data) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await apiClient.put<{ user: User }>(API_ENDPOINTS.AUTH.PROFILE, data);
+      if (response.data?.user) {
+        set({ user: response.data.user });
+      }
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.error?.message || 'Failed to update profile';
+      set({ error: errorMessage });
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  changePassword: async (currentPassword, newPassword) => {
+    set({ isLoading: true, error: null });
+    try {
+      await apiClient.post(API_ENDPOINTS.AUTH.CHANGE_PASSWORD, {
+        current_password: currentPassword,
+        new_password: newPassword,
+      });
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.error?.message || 'Failed to change password';
+      set({ error: errorMessage });
       throw error;
     } finally {
       set({ isLoading: false });

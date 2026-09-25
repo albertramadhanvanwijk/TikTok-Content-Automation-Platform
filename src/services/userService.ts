@@ -145,6 +145,61 @@ class UserService {
       errors,
     };
   }
+
+  async findByEmail(email: string): Promise<UserResponse | null> {
+    try {
+      const user = await userRepository.findByEmail(email);
+      if (!user) return null;
+      return userRepository.toResponseObject(user);
+    } catch (error) {
+      logger.error('Error finding user by email', error);
+      throw error;
+    }
+  }
+
+  async updateProfile(userId: string, data: { full_name?: string; email?: string }): Promise<UserResponse> {
+    try {
+      const user = await userRepository.updateProfile(userId, data);
+      logger.info(`Profile updated for user: ${userId}`);
+      return userRepository.toResponseObject(user);
+    } catch (error) {
+      logger.error('Error updating profile', error);
+      throw error;
+    }
+  }
+
+  async changePassword(userId: string, currentPassword: string, newPassword: string): Promise<void> {
+    try {
+      // Validate new password
+      const validation = authService.validatePassword(newPassword);
+      if (!validation.isValid) {
+        throw new Error(`Password validation failed: ${validation.errors.join(', ')}`);
+      }
+
+      // Get user with password hash
+      const user = await userRepository.findById(userId);
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      // Verify current password
+      const isPasswordValid = await authService.comparePassword(currentPassword, user.password_hash);
+      if (!isPasswordValid) {
+        throw new Error('Current password is incorrect');
+      }
+
+      // Hash new password
+      const newPasswordHash = await authService.hashPassword(newPassword);
+
+      // Update password
+      await userRepository.updatePassword(userId, newPasswordHash);
+
+      logger.info(`Password changed for user: ${userId}`);
+    } catch (error) {
+      logger.error('Error changing password', error);
+      throw error;
+    }
+  }
 }
 
 export default new UserService();

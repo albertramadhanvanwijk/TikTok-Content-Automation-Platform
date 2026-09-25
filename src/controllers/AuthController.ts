@@ -204,6 +204,89 @@ class AuthController {
       });
     }
   }
+
+  async updateProfile(req: AuthRequest, res: Response): Promise<void> {
+    try {
+      if (!req.userId) {
+        res.status(401).json({
+          error: { message: 'Unauthorized', status: 401 },
+        });
+        return;
+      }
+
+      const { full_name, email } = req.body;
+
+      if (!full_name && !email) {
+        res.status(400).json({
+          error: { message: 'At least one field (full_name or email) is required', status: 400 },
+        });
+        return;
+      }
+
+      // Check if email is already taken by another user
+      if (email) {
+        const existingUser = await userService.findByEmail(email);
+        if (existingUser && existingUser.id !== req.userId) {
+          res.status(400).json({
+            error: { message: 'Email already in use', status: 400 },
+          });
+          return;
+        }
+      }
+
+      const user = await userService.updateProfile(req.userId, { full_name, email });
+
+      res.status(200).json({
+        status: 'success',
+        data: { user },
+      });
+    } catch (error: any) {
+      logger.error('Update profile error', error);
+      res.status(400).json({
+        error: { message: error.message || 'Failed to update profile', status: 400 },
+      });
+    }
+  }
+
+  async changePassword(req: AuthRequest, res: Response): Promise<void> {
+    try {
+      if (!req.userId) {
+        res.status(401).json({
+          error: { message: 'Unauthorized', status: 401 },
+        });
+        return;
+      }
+
+      const { current_password, new_password } = req.body;
+
+      if (!current_password || !new_password) {
+        res.status(400).json({
+          error: { message: 'Current password and new password are required', status: 400 },
+        });
+        return;
+      }
+
+      if (new_password.length < 8) {
+        res.status(400).json({
+          error: { message: 'New password must be at least 8 characters', status: 400 },
+        });
+        return;
+      }
+
+      await userService.changePassword(req.userId, current_password, new_password);
+
+      res.status(200).json({
+        status: 'success',
+        message: 'Password changed successfully',
+      });
+    } catch (error: any) {
+      logger.error('Change password error', error);
+      const status = error.message.includes('incorrect') ? 401 : 400;
+      res.status(status).json({
+        error: { message: error.message || 'Failed to change password', status },
+      });
+    }
+  }
 }
 
 export default new AuthController();
