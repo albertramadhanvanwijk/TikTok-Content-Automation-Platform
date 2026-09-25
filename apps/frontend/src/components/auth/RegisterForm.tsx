@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/store/authStore';
+import { toast } from '@/store/toastStore';
 
 export default function RegisterForm() {
   const [email, setEmail] = useState('');
@@ -11,17 +12,18 @@ export default function RegisterForm() {
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const router = useRouter();
-  const { register, isLoading, error, clearError } = useAuthStore();
+  const { register, isLoading } = useAuthStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    clearError();
 
     try {
       await register(email, username, password, fullName);
+      toast.success('Account created!', 'Welcome to TikTok Carousel Automation');
       router.push('/');
-    } catch (err) {
-      // Error is handled by store
+    } catch (err: any) {
+      const message = err.response?.data?.error?.message || 'Registration failed';
+      toast.error('Registration failed', message);
     }
   };
 
@@ -31,12 +33,6 @@ export default function RegisterForm() {
       <p className="text-text-secondary mb-6">TikTok Carousel Automation</p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-            {error}
-          </div>
-        )}
-
         <div>
           <label className="block text-sm font-medium text-text-primary mb-2">
             Full Name

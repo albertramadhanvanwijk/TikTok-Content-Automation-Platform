@@ -52,14 +52,6 @@ export default function CarouselList() {
         </Link>
       </div>
 
-      {/* Error */}
-      {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded flex justify-between items-center">
-          <span>{error}</span>
-          <button onClick={clearError} className="text-red-700 hover:text-red-900">×</button>
-        </div>
-      )}
-
       {/* Status Filter */}
       <div className="flex gap-2 overflow-x-auto pb-2">
         {statuses.map((status) => (

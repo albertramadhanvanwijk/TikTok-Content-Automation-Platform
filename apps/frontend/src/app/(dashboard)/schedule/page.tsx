@@ -5,6 +5,7 @@ import { useContentStore } from '@/store/contentStore';
 import { Carousel } from '@/types';
 import { Calendar, Clock } from 'lucide-react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth } from 'date-fns';
+import { toast } from '@/store/toastStore';
 
 export default function SchedulePage() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -23,7 +24,7 @@ export default function SchedulePage() {
   } = useContentStore();
 
   useEffect(() => {
-    fetchCarousels('draft', 100, 0); // Fetch draft carousels that can be scheduled
+    fetchCarousels('draft', 100, 0);
   }, []);
 
   const daysInMonth = eachDayOfInterval({
@@ -44,6 +45,7 @@ export default function SchedulePage() {
         scheduledAt.setHours(parseInt(hours), parseInt(minutes), 0, 0);
 
         await scheduleCarousel(selectedCarousel, scheduledAt.toISOString());
+        toast.success('Carousel scheduled', `Will be posted on ${format(scheduledAt, 'MMM dd, yyyy at HH:mm')}`);
         
         setShowScheduleForm(false);
         setSelectedCarousel('');
@@ -52,8 +54,8 @@ export default function SchedulePage() {
         
         fetchCarousels('draft', 100, 0);
       }
-    } catch (err) {
-      // Error handled by store
+    } catch (err: any) {
+      toast.error('Scheduling failed', err.message || 'Failed to schedule carousel');
     }
   };
 
@@ -71,13 +73,6 @@ export default function SchedulePage() {
         <h1 className="text-3xl font-bold text-text-primary">Schedule</h1>
         <p className="text-text-secondary mt-1">Manage when your carousels are posted</p>
       </div>
-
-      {/* Error */}
-      {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-          {error}
-        </div>
-      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Calendar */}

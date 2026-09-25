@@ -4,22 +4,24 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/store/authStore';
+import { toast } from '@/store/toastStore';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
-  const { login, isLoading, error, clearError } = useAuthStore();
+  const { login, isLoading } = useAuthStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    clearError();
 
     try {
       await login(email, password);
+      toast.success('Welcome back!', 'You have been signed in');
       router.push('/');
-    } catch (err) {
-      // Error is handled by store
+    } catch (err: any) {
+      const message = err.response?.data?.error?.message || 'Login failed';
+      toast.error('Login failed', message);
     }
   };
 
@@ -29,12 +31,6 @@ export default function LoginForm() {
       <p className="text-text-secondary mb-6">TikTok Carousel Automation</p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-            {error}
-          </div>
-        )}
-
         <div>
           <label className="block text-sm font-medium text-text-primary mb-2">
             Email
