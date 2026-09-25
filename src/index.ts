@@ -7,6 +7,7 @@ import authRoutes from './routes/authRoutes';
 import contentRoutes from './routes/contentRoutes';
 import tiktokRoutes from './routes/tiktokRoutes';
 import analyticsRoutes from './routes/analyticsRoutes';
+import aiRoutes from './routes/aiRoutes';
 import tiktokScheduler from './scheduler/tiktokScheduler';
 
 dotenv.config();
@@ -39,6 +40,7 @@ app.use('/auth', authRoutes);
 app.use('/content', contentRoutes);
 app.use('/tiktok', tiktokRoutes);
 app.use('/analytics', analyticsRoutes);
+app.use('/ai', aiRoutes);
 
 // Error handling middleware
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
