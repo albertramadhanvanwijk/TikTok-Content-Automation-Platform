@@ -110,3 +110,33 @@ export interface PaginatedResponse<T> {
     hasMore: boolean;
   };
 }
+
+export interface Design {
+  color_scheme: string[];
+  fonts: string[];
+  layout: string;
+  visual_elements?: string[];
+  recommended_dimensions?: string;
+  mock?: boolean;
+  topic?: string;
+  style?: string;
+}
+
+export interface GenerateResult {
+  carousel: Carousel;
+  slides: Slide[];
+  design: Design;
+  hashtags: string[];
+  mock?: boolean;
+  mock_reason?: string;
+}
+
+export interface NotionSetup {
+  userId?: string;
+  notionDatabaseId?: string;
+  databaseTitle: string;
+  properties: string[];
+  connected_at: string;
+  mock?: boolean;
+  mock_reason?: string;
+}
