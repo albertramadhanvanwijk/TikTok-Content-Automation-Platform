@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { toast } from '@/store/toastStore';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import ImageUpload from '@/components/ui/ImageUpload';
+import AIToolbar from '@/components/content/AIToolbar';
 
 export default function CarouselEditorPage() {
   const router = useRouter();
@@ -193,6 +194,12 @@ export default function CarouselEditorPage() {
           </p>
         </div>
       </div>
+
+      <AIToolbar
+        carouselId={isNew ? null : carouselId}
+        title={formData.title || ''}
+        onHashtagsApplied={(tags) => setFormData((f) => ({ ...f, tags }))}
+      />
 
       {/* Carousel Form */}
       <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-border p-6 space-y-6">

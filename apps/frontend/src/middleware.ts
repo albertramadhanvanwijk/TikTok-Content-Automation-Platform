@@ -4,11 +4,11 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get('accessToken')?.value;
   const { pathname } = request.nextUrl;
 
-  // Public routes
+  // Public routes - only login/register are public; all dashboard routes including /ai /tiktok /templates require auth
   const publicRoutes = ['/login', '/register'];
 
-  // Check if accessing protected route without token
-  if (!publicRoutes.includes(pathname) && pathname !== '/' && !token) {
+  // Check if accessing protected route without token (includes / and all /ai /tiktok /templates)
+  if (!publicRoutes.includes(pathname) && !token) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 

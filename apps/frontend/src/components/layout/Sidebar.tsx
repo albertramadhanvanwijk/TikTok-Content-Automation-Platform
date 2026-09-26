@@ -10,6 +10,9 @@ import {
   Settings,
   LogOut,
   ChevronDown,
+  Sparkles,
+  Music,
+  LayoutTemplate,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 import { useState } from 'react';
@@ -17,6 +20,9 @@ import { useState } from 'react';
 const navigationItems = [
   { name: 'Dashboard', href: '/', icon: BarChart3 },
   { name: 'Content', href: '/content', icon: FileText },
+  { name: 'AI Studio', href: '/ai', icon: Sparkles },
+  { name: 'TikTok', href: '/tiktok', icon: Music },
+  { name: 'Templates', href: '/templates', icon: LayoutTemplate },
   { name: 'Schedule', href: '/schedule', icon: Calendar },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
