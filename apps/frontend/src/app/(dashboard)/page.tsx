@@ -5,7 +5,7 @@ import { apiClient } from '@/services/api';
 import { API_ENDPOINTS } from '@/utils/constants';
 import { useAuthStore } from '@/store/authStore';
 import { toast } from '@/store/toastStore';
-import { Plus, BarChart2, Calendar, Clock, TrendingUp } from 'lucide-react';
+import { Plus, BarChart2, Calendar, Clock, TrendingUp, Heart, Share2, MessageCircle } from 'lucide-react';
 import Link from 'next/link';
 
 interface DashboardData {

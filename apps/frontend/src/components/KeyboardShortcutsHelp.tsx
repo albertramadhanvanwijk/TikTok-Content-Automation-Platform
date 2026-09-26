@@ -1,6 +1,6 @@
 'use client';
 
-import { Shortcut } from './useKeyboardShortcuts';
+import { Shortcut } from '@/hooks/useKeyboardShortcuts';
 
 interface KeyboardShortcutsHelpProps {
   shortcuts: Shortcut[];

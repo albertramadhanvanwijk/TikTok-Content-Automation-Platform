@@ -40,15 +40,15 @@ function ToastItem({ toast, onClose }: { toast: Toast; onClose: () => void }) {
         {toast.message && (
           <p className="text-sm opacity-90 mt-1">{toast.message}</p>
         )}
-        {toast.action && (
+        {toast.action?.label && (
           <button
             onClick={() => {
-              toast.action.onClick();
+              toast.action!.onClick();
               onClose();
             }}
             className="mt-2 text-sm font-medium underline hover:no-underline"
           >
-            {toast.action.label}
+            {toast.action!.label}
           </button>
         )}
       </div>

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Carousel } from '@/types';
 import Link from 'next/link';
-import { Trash2, Edit, Calendar, Archive, Check, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Trash2, Edit, Calendar, Archive } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from '@/store/toastStore';
 
@@ -72,21 +72,17 @@ export default function CarouselCard({
     }
   };
 
-  const handleCheckboxClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onSelect?.(carousel.id);
-  };
-
   return (
     <div className={`bg-white rounded-lg border border-border p-4 hover:shadow-md transition ${isSelected ? 'ring-2 ring-primary border-primary' : ''}`}>
       {/* Selection Checkbox */}
       {onSelect && (
         <div className="flex justify-end mb-2">
-          <label className="cursor-pointer">
+          <label className="cursor-pointer" onClick={(e) => e.stopPropagation()}>
             <input
               type="checkbox"
               checked={isSelected}
-              onChange={handleCheckboxClick}
+              onChange={() => onSelect(carousel.id)}
+              onClick={(e) => e.stopPropagation()}
               className="w-4 h-4 rounded border-border text-primary focus:ring-primary"
             />
           </label>

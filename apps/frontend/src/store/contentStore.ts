@@ -100,12 +100,13 @@ export const useContentStore = create<ContentState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await apiClient.post<{ carousel: Carousel }>(API_ENDPOINTS.CONTENT.CAROUSELS, data);
-      if (response.data?.carousel) {
+      const newCarousel = response.data?.carousel;
+      if (newCarousel) {
         set((state) => ({
-          carousels: [response.data.carousel, ...state.carousels],
-          currentCarousel: response.data.carousel,
+          carousels: [newCarousel, ...state.carousels],
+          currentCarousel: newCarousel,
         }));
-        return response.data.carousel;
+        return newCarousel;
       }
       throw new Error('No carousel in response');
     } catch (error: any) {
@@ -120,10 +121,11 @@ export const useContentStore = create<ContentState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await apiClient.put<{ carousel: Carousel }>(`${API_ENDPOINTS.CONTENT.CAROUSELS}/${id}`, data);
-      if (response.data?.carousel) {
+      const updated = response.data?.carousel;
+      if (updated) {
         set((state) => ({
-          carousels: state.carousels.map((c) => (c.id === id ? response.data.carousel : c)),
-          currentCarousel: state.currentCarousel?.id === id ? response.data.carousel : state.currentCarousel,
+          carousels: state.carousels.map((c) => (c.id === id ? updated : c)),
+          currentCarousel: state.currentCarousel?.id === id ? updated : state.currentCarousel,
         }));
       }
     } catch (error: any) {
@@ -138,10 +140,11 @@ export const useContentStore = create<ContentState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await apiClient.post<{ carousel: Carousel }>(`${API_ENDPOINTS.CONTENT.CAROUSELS}/${id}/publish`);
-      if (response.data?.carousel) {
+      const published = response.data?.carousel;
+      if (published) {
         set((state) => ({
-          carousels: state.carousels.map((c) => (c.id === id ? response.data.carousel : c)),
-          currentCarousel: state.currentCarousel?.id === id ? response.data.carousel : state.currentCarousel,
+          carousels: state.carousels.map((c) => (c.id === id ? published : c)),
+          currentCarousel: state.currentCarousel?.id === id ? published : state.currentCarousel,
         }));
       }
     } catch (error: any) {
@@ -158,10 +161,11 @@ export const useContentStore = create<ContentState>((set, get) => ({
       const response = await apiClient.post<{ carousel: Carousel }>(`${API_ENDPOINTS.CONTENT.CAROUSELS}/${id}/schedule`, {
         scheduled_at: scheduledAt,
       });
-      if (response.data?.carousel) {
+      const scheduled = response.data?.carousel;
+      if (scheduled) {
         set((state) => ({
-          carousels: state.carousels.map((c) => (c.id === id ? response.data.carousel : c)),
-          currentCarousel: state.currentCarousel?.id === id ? response.data.carousel : state.currentCarousel,
+          carousels: state.carousels.map((c) => (c.id === id ? scheduled : c)),
+          currentCarousel: state.currentCarousel?.id === id ? scheduled : state.currentCarousel,
         }));
       }
     } catch (error: any) {
@@ -176,7 +180,8 @@ export const useContentStore = create<ContentState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await apiClient.post<{ carousel: Carousel }>(`${API_ENDPOINTS.CONTENT.CAROUSELS}/${id}/archive`);
-      if (response.data?.carousel) {
+      const archived = response.data?.carousel;
+      if (archived) {
         set((state) => ({
           carousels: state.carousels.filter((c) => c.id !== id),
           currentCarousel: state.currentCarousel?.id === id ? null : state.currentCarousel,
@@ -226,11 +231,12 @@ export const useContentStore = create<ContentState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await apiClient.post<{ slide: Slide }>(`${API_ENDPOINTS.CONTENT.CAROUSELS}/${carouselId}/slides`, data);
-      if (response.data?.slide) {
+      const newSlide = response.data?.slide;
+      if (newSlide) {
         set((state) => ({
-          slides: [...state.slides, response.data.slide],
+          slides: [...state.slides, newSlide],
         }));
-        return response.data.slide;
+        return newSlide;
       }
       throw new Error('No slide in response');
     } catch (error: any) {
@@ -245,9 +251,10 @@ export const useContentStore = create<ContentState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await apiClient.put<{ slide: Slide }>(`${API_ENDPOINTS.CONTENT.SLIDES}/${slideId}`, data);
-      if (response.data?.slide) {
+      const updatedSlide = response.data?.slide;
+      if (updatedSlide) {
         set((state) => ({
-          slides: state.slides.map((s) => (s.id === slideId ? response.data.slide : s)),
+          slides: state.slides.map((s) => (s.id === slideId ? updatedSlide : s)),
         }));
       }
     } catch (error: any) {
@@ -293,11 +300,12 @@ export const useContentStore = create<ContentState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await apiClient.post<{ template: Template }>(API_ENDPOINTS.CONTENT.TEMPLATES, data);
-      if (response.data?.template) {
+      const newTemplate = response.data?.template;
+      if (newTemplate) {
         set((state) => ({
-          templates: [response.data.template, ...state.templates],
+          templates: [newTemplate, ...state.templates],
         }));
-        return response.data.template;
+        return newTemplate;
       }
       throw new Error('No template in response');
     } catch (error: any) {
@@ -331,11 +339,12 @@ export const useContentStore = create<ContentState>((set, get) => ({
         carousel_id: carouselId,
         tiktok_account_id: accountId,
       });
-      if (response.data?.job) {
+      const newJob = response.data?.job;
+      if (newJob) {
         set((state) => ({
-          uploadJobs: [response.data.job, ...state.uploadJobs],
+          uploadJobs: [newJob, ...state.uploadJobs],
         }));
-        return response.data.job;
+        return newJob;
       }
       throw new Error('No upload job in response');
     } catch (error: any) {

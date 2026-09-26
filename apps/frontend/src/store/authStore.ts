@@ -45,8 +45,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         full_name: fullName,
       });
 
-      if (response.data?.user) {
-        set({ user: response.data.user, isAuthenticated: true });
+      // response.data is { user: ... } directly (ApiResponse wraps it); cast via any to handle both shapes
+      const regUser = (response.data as any)?.user ?? (response as any).data?.user;
+      if (regUser) {
+        set({ user: regUser, isAuthenticated: true });
       }
     } catch (error: any) {
       const errorMessage = error.response?.data?.error?.message || 'Registration failed';
@@ -60,13 +62,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   login: async (email, password) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await apiClient.post<AuthResponse>(API_ENDPOINTS.AUTH.LOGIN, {
+      const response: any = await apiClient.post<AuthResponse>(API_ENDPOINTS.AUTH.LOGIN, {
         email,
         password,
       });
 
-      if (response.data?.user) {
-        set({ user: response.data.user, isAuthenticated: true });
+      const loginUser = (response.data as any)?.user ?? (response as any).data?.user;
+      if (loginUser) {
+        set({ user: loginUser, isAuthenticated: true });
       }
     } catch (error: any) {
       const errorMessage = error.response?.data?.error?.message || 'Login failed';
@@ -91,9 +94,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   fetchProfile: async () => {
     set({ isLoading: true, error: null });
     try {
-      const response = await apiClient.get<{ user: User }>(API_ENDPOINTS.AUTH.PROFILE);
-      if (response.data?.user) {
-        set({ user: response.data.user, isAuthenticated: true });
+      const response: any = await apiClient.get<{ user: User }>(API_ENDPOINTS.AUTH.PROFILE);
+      const profileUser = (response.data as any)?.user ?? (response as any).data?.user ?? response.user;
+      if (profileUser) {
+        set({ user: profileUser, isAuthenticated: true });
       }
     } catch (error: any) {
       const errorMessage = error.response?.data?.error?.message || 'Failed to fetch profile';
@@ -107,9 +111,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   updateProfile: async (data) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await apiClient.put<{ user: User }>(API_ENDPOINTS.AUTH.PROFILE, data);
-      if (response.data?.user) {
-        set({ user: response.data.user });
+      const response: any = await apiClient.put<{ user: User }>(API_ENDPOINTS.AUTH.PROFILE, data);
+      const updatedUser = (response.data as any)?.user ?? (response as any).data?.user ?? response.user;
+      if (updatedUser) {
+        set({ user: updatedUser });
       }
     } catch (error: any) {
       const errorMessage = error.response?.data?.error?.message || 'Failed to update profile';

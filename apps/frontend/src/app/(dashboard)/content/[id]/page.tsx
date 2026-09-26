@@ -108,7 +108,7 @@ export default function CarouselEditorPage() {
     if (!carouselId) return;
 
     const slideData: Partial<Slide> = {
-      slide_number: parseInt(slideFormData.slide_number as string) || slides.length + 1,
+      slide_number: parseInt(String(slideFormData.slide_number ?? slides.length + 1)) || slides.length + 1,
       title: slideFormData.title as string,
       description: slideFormData.description as string,
       content_text: slideFormData.content_text as string,

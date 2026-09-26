@@ -14,3 +14,8 @@ coverage/
 .env.test
 *.sqlite
 *.db
+.next/
+out/
+tsconfig.tsbuildinfo
+apps/frontend/tsconfig.tsbuildinfo
+apps/frontend/.next/

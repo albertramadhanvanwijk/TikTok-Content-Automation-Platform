@@ -297,8 +297,8 @@ export default function AnalyticsPage() {
               <strong>{data?.total_carousels || 0}</strong> carousels.
             </p>
             <p>
-              Views growth: <strong className={data?.growth_rate?.views > 0 ? 'text-green-600' : 'text-red-600'}>
-                {data?.growth_rate?.views >= 0 ? '+' : ''}{data?.growth_rate?.views || 0}%
+              Views growth: <strong className={(data?.growth_rate?.views ?? 0) > 0 ? 'text-green-600' : 'text-red-600'}>
+                {(data?.growth_rate?.views ?? 0) >= 0 ? '+' : ''}{data?.growth_rate?.views ?? 0}%
               </strong> from last period.
             </p>
             <p className="pt-2 border-t border-blue-200">
