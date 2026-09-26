@@ -66,10 +66,27 @@ class TikTokService {
     );
   }
 
+  private isMock(): boolean {
+    return !process.env.TIKTOK_CLIENT_KEY;
+  }
+
+  private mockAuthResponse(): TikTokAuthResponse & { mock: true } {
+    return {
+      access_token: `mock_access_token_${Date.now()}`,
+      expires_in: 86400,
+      refresh_token: `mock_refresh_token_${Date.now()}`,
+      mock: true as const,
+    };
+  }
+
   /**
    * Get access token using authorization code (OAuth flow)
    */
   async getAccessToken(code: string): Promise<TikTokAuthResponse> {
+    if (this.isMock()) {
+      logger.info('TikTok mock fallback — getAccessToken without TIKTOK_CLIENT_KEY');
+      return this.mockAuthResponse();
+    }
     try {
       const response = await this.client.post('/oauth/token/', {
         client_key: this.clientKey,
@@ -254,6 +271,15 @@ class TikTokService {
     redirectUri: string,
     scopes: string[] = ['user.info.basic', 'video.upload']
   ): string {
+    if (this.isMock()) {
+      logger.info('TikTok mock fallback — buildAuthorizationUrl without TIKTOK_CLIENT_KEY');
+      const mockParams = new URLSearchParams({
+        mock: '1',
+        state,
+        redirect_uri: redirectUri,
+      });
+      return `http://localhost:3001/tiktok/callback?${mockParams.toString()}`;
+    }
     const params = new URLSearchParams({
       client_key: this.clientKey,
       scope: scopes.join(','),

@@ -23,7 +23,7 @@ class AIController {
         return;
       }
 
-      const result = await aiIntegrationService.generateCarouselFromTopic(
+      const result: any = await aiIntegrationService.generateCarouselFromTopic(
         req.userId,
         topic,
         {
@@ -35,7 +35,7 @@ class AIController {
 
       res.status(201).json({
         status: 'success',
-        data: result,
+        data: result.mock ? result : { ...result, mock: false },
       });
     } catch (error: any) {
       logger.error('Generate carousel error', error);
@@ -111,12 +111,14 @@ class AIController {
         notion_database_id,
         template_id
       );
+      const isMock = !process.env.OPENAI_API_KEY || !process.env.NOTION_API_KEY || (carousels as any[]).some((c: any) => c.mock);
 
       res.status(201).json({
         status: 'success',
         data: {
           carousels_generated: carousels.length,
           carousels,
+          ...(isMock ? { mock: true, mock_reason: 'OPENAI_API_KEY or NOTION_API_KEY missing' } : {}),
         },
       });
     } catch (error: any) {

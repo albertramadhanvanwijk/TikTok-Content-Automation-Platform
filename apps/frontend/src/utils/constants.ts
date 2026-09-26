@@ -10,10 +10,23 @@ export const API_ENDPOINTS = {
     TEMPLATES: '/content/templates',
     SLIDES: '/content/slides',
   },
+  AI: {
+    GENERATE_CAROUSEL: '/ai/generate-carousel',
+    NOTION_SETUP: '/ai/notion/setup',
+    NOTION_SYNC: '/ai/notion/sync',
+    ENHANCE: (id: string) => `/ai/carousels/${id}/enhance`,
+    DESIGN_SUGGESTION: '/ai/design-suggestion',
+    GENERATE_HASHTAGS: '/ai/generate-hashtags',
+  },
   TIKTOK: {
+    AUTH_URL: '/tiktok/auth-url',
     CONNECT: '/tiktok/connect',
     ACCOUNTS: '/tiktok/accounts',
+    DISCONNECT: (id: string) => `/tiktok/accounts/${id}/disconnect`,
     UPLOAD_JOBS: '/tiktok/upload-jobs',
+    CAROUSEL_JOBS: (id: string) => `/tiktok/carousels/${id}/upload-jobs`,
+    JOB_STATUS: (id: string) => `/tiktok/upload-jobs/${id}`,
+    PROCESS_JOB: (id: string) => `/tiktok/upload-jobs/${id}/process`,
   },
   ANALYTICS: {
     DASHBOARD: '/analytics/dashboard',
