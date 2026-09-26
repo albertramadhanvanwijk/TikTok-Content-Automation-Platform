@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Providers } from './providers'
 import ToastContainer from '@/components/ui/Toast'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -14,10 +15,14 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body>
-        <Providers>{children}</Providers>
-        <ToastContainer />
+        <ErrorBoundary>
+          <Providers>
+            {children}
+          </Providers>
+          <ToastContainer />
+        </ErrorBoundary>
       </body>
     </html>
   )

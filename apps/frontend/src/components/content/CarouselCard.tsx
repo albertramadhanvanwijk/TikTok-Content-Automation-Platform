@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Carousel } from '@/types';
 import Link from 'next/link';
-import { Trash2, Edit, Share2, Calendar, Archive } from 'lucide-react';
+import { Trash2, Edit, Calendar, Archive, Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from '@/store/toastStore';
 
@@ -11,9 +11,17 @@ interface CarouselCardProps {
   carousel: Carousel;
   onDelete: (id: string) => Promise<void>;
   onArchive: (id: string) => Promise<void>;
+  isSelected?: boolean;
+  onSelect?: (id: string) => void;
 }
 
-export default function CarouselCard({ carousel, onDelete, onArchive }: CarouselCardProps) {
+export default function CarouselCard({ 
+  carousel, 
+  onDelete, 
+  onArchive, 
+  isSelected = false,
+  onSelect 
+}: CarouselCardProps) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showArchiveConfirm, setShowArchiveConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -64,24 +72,45 @@ export default function CarouselCard({ carousel, onDelete, onArchive }: Carousel
     }
   };
 
+  const handleCheckboxClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onSelect?.(carousel.id);
+  };
+
   return (
-    <div className="bg-white rounded-lg border border-border p-4 hover:shadow-md transition">
+    <div className={`bg-white rounded-lg border border-border p-4 hover:shadow-md transition ${isSelected ? 'ring-2 ring-primary border-primary' : ''}`}>
+      {/* Selection Checkbox */}
+      {onSelect && (
+        <div className="flex justify-end mb-2">
+          <label className="cursor-pointer">
+            <input
+              type="checkbox"
+              checked={isSelected}
+              onChange={handleCheckboxClick}
+              className="w-4 h-4 rounded border-border text-primary focus:ring-primary"
+            />
+          </label>
+        </div>
+      )}
+
       <div className="flex items-start justify-between mb-3">
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           <Link href={`/content/${carousel.id}`}>
-            <h3 className="text-lg font-semibold text-text-primary hover:text-primary cursor-pointer">
+            <h3 className="text-lg font-semibold text-text-primary hover:text-primary cursor-pointer truncate">
               {carousel.title}
             </h3>
           </Link>
-          <p className="text-sm text-text-secondary mt-1">{carousel.description}</p>
+          <p className="text-sm text-text-secondary mt-1 line-clamp-2">{carousel.description || 'No description'}</p>
         </div>
-        <span className={`px-2 py-1 rounded text-xs font-semibold ${getStatusColor(carousel.status)}`}>
+        <span className={`px-2 py-1 rounded text-xs font-semibold ${getStatusColor(carousel.status)} flex-shrink-0`}>
           {carousel.status}
         </span>
       </div>
 
       <div className="flex items-center gap-4 text-xs text-text-tertiary mb-3">
-        <span>{carousel.slides_count} slides</span>
+        <span className="flex items-center gap-1">
+          <span>{carousel.slides_count} slides</span>
+        </span>
         {carousel.scheduled_at && (
           <span className="flex items-center gap-1">
             <Calendar size={14} />

@@ -20,21 +20,7 @@ const app: Express = express();
 const PORT = process.env.PORT || 3000;
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3001';
 
-// Configure multer for file uploads
-multer({
-  storage: multer.memoryStorage(),
-  limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB
-  },
-  fileFilter: (_req, file, cb) => {
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-    if (allowedTypes.includes(file.mimetype)) {
-      cb(null, true);
-    } else {
-      cb(new Error('Invalid file type. Only JPEG, PNG, WebP, and GIF are allowed.'));
-    }
-  },
-});
+// Multer configured per-route in uploadRoutes.ts (keep multer import for error handling below)
 
 // Middleware
 app.use(helmet());
