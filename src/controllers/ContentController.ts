@@ -180,6 +180,47 @@ class ContentController {
     }
   }
 
+  async updateCarousel(req: AuthRequest, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+      const { title, description, category, tags, template_id } = req.body;
+      if (!title && !description && category === undefined && tags === undefined && !template_id) {
+        res.status(400).json({ error: { message: 'At least one field to update is required', status: 400 } });
+        return;
+      }
+      const carousel = await contentService.updateCarousel(id, { title, description, category, tags, template_id });
+      res.status(200).json({ status: 'success', data: { carousel } });
+    } catch (error: any) {
+      logger.error('Update carousel error', error);
+      const status = error.message.includes('not found') ? 404 : 400;
+      res.status(status).json({ error: { message: error.message || 'Failed to update carousel', status } });
+    }
+  }
+
+  async deleteCarousel(req: AuthRequest, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+      await contentService.deleteCarousel(id);
+      res.status(200).json({ status: 'success', message: 'Carousel deleted' });
+    } catch (error: any) {
+      logger.error('Delete carousel error', error);
+      const status = error.message.includes('not found') ? 404 : 400;
+      res.status(status).json({ error: { message: error.message || 'Failed to delete carousel', status } });
+    }
+  }
+
+  async deleteTemplate(req: AuthRequest, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+      await contentService.deleteTemplate(id);
+      res.status(200).json({ status: 'success', message: 'Template deleted' });
+    } catch (error: any) {
+      logger.error('Delete template error', error);
+      const status = error.message.includes('not found') ? 404 : 400;
+      res.status(status).json({ error: { message: error.message || 'Failed to delete template', status } });
+    }
+  }
+
   async publishCarousel(req: AuthRequest, res: Response): Promise<void> {
     try {
       const { id } = req.params;
@@ -354,6 +395,22 @@ class ContentController {
           status: 400,
         },
       });
+    }
+  }
+
+  async reorderSlides(req: AuthRequest, res: Response): Promise<void> {
+    try {
+      const { carouselId } = req.params;
+      const { orderedIds } = req.body;
+      if (!Array.isArray(orderedIds) || orderedIds.length === 0) {
+        res.status(400).json({ error: { message: 'orderedIds array is required', status: 400 } });
+        return;
+      }
+      const slides = await contentService.reorderSlides(carouselId, orderedIds);
+      res.status(200).json({ status: 'success', data: { slides } });
+    } catch (error: any) {
+      logger.error('Reorder slides error', error);
+      res.status(400).json({ error: { message: error.message || 'Failed to reorder slides', status: 400 } });
     }
   }
 

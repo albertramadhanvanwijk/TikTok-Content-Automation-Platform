@@ -66,8 +66,16 @@ class TikTokService {
     );
   }
 
+  private isMockKey(value: string | undefined): boolean {
+    if (!value) return true;
+    const v = value.trim();
+    if (v === '') return true;
+    if (v.startsWith('your_')) return true;
+    return false;
+  }
+
   private isMock(): boolean {
-    return !process.env.TIKTOK_CLIENT_KEY;
+    return this.isMockKey(process.env.TIKTOK_CLIENT_KEY);
   }
 
   private mockAuthResponse(): TikTokAuthResponse & { mock: true } {

@@ -43,6 +43,24 @@ router.get('/carousels', (req, res) => contentController.getCarousels(req as any
 router.get('/carousels/:id', (req, res) => contentController.getCarousel(req as any, res));
 
 /**
+ * PUT /content/carousels/:id
+ * Update carousel (title, description, category, tags, template_id)
+ */
+router.put('/carousels/:id', (req, res) => contentController.updateCarousel(req as any, res));
+
+/**
+ * DELETE /content/carousels/:id
+ * Delete carousel
+ */
+router.delete('/carousels/:id', (req, res) => contentController.deleteCarousel(req as any, res));
+
+/**
+ * DELETE /content/templates/:id
+ * Delete template
+ */
+router.delete('/templates/:id', (req, res) => contentController.deleteTemplate(req as any, res));
+
+/**
  * POST /content/carousels/:id/publish
  * Publish carousel
  */
@@ -91,6 +109,14 @@ router.get('/carousels/:carouselId/slides', (req, res) =>
  */
 router.put('/slides/:slideId', (req, res) =>
   contentController.updateSlide(req as any, res)
+);
+
+/**
+ * PUT /content/carousels/:carouselId/slides/reorder
+ * Reorder all slides in a carousel atomically (body: { orderedIds: string[] })
+ */
+router.put('/carousels/:carouselId/slides/reorder', (req, res) =>
+  contentController.reorderSlides(req as any, res)
 );
 
 /**

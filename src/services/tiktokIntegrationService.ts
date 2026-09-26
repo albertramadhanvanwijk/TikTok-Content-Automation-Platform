@@ -54,6 +54,22 @@ class TikTokIntegrationService {
     }
   }
 
+  private isMockTikTokKey(): boolean {
+    const v = process.env.TIKTOK_CLIENT_KEY;
+    if (!v) return true;
+    const t = v.trim();
+    if (t === '') return true;
+    if (t.startsWith('your_')) return true;
+    return false;
+  }
+
+  private isMockVideoPath(videoPath: string): boolean {
+    if (!videoPath) return false;
+    if (videoPath === 'placeholder.mp4') return true;
+    if (videoPath.startsWith('mock:')) return true;
+    return false;
+  }
+
   /**
    * Create upload job for carousel
    */
@@ -71,8 +87,9 @@ class TikTokIntegrationService {
         throw new Error('TikTok account not found or unauthorized');
       }
 
-      // Validate video file exists
-      if (!fs.existsSync(input.video_file_path)) {
+      // Validate video file exists (skip when mock TikTok or mock video path — demo without real file)
+      const skipFsCheck = this.isMockTikTokKey() || this.isMockVideoPath(input.video_file_path);
+      if (!skipFsCheck && !fs.existsSync(input.video_file_path)) {
         throw new Error('Video file not found');
       }
 
@@ -117,10 +134,22 @@ class TikTokIntegrationService {
         throw new Error('TikTok account not found');
       }
 
-      // Check token expiration and refresh if needed
+      // Check token expiration and refresh if needed (skip for mock accounts whose token is mock_* )
+      const isMockAccount = account.access_token.startsWith('mock_');
       const now = new Date();
-      if (account.token_expires_at <= now) {
+      if (!isMockAccount && account.token_expires_at <= now) {
         await this.refreshAccountToken(account.id);
+      }
+
+      // Mock TikTok path: when account is mock or video path is mock/placeholder, simulate publish without real file/TikTok API
+      const isMockPath = isMockAccount || this.isMockVideoPath(job.video_file_path) || this.isMockTikTokKey();
+      if (isMockPath) {
+        const mockVideoId = `mock_video_${Date.now()}`;
+        await tiktokRepository.updateUploadJobStatus(jobId, 'published', mockVideoId);
+        await tiktokRepository.logUploadEvent(jobId, 'published', `Mock published to TikTok: ${mockVideoId} (no real upload — set TIKTOK_CLIENT_KEY for real)`, { video_id: mockVideoId, mock: true });
+        await contentRepository.updateCarouselStatus(job.carousel_id, 'published');
+        logger.info(`Mock upload job completed: ${jobId} -> ${mockVideoId}`);
+        return { success: true, videoId: mockVideoId, mock: true };
       }
 
       // Read video file

@@ -223,12 +223,12 @@ class TikTokRepository {
   ): Promise<TikTokUploadJob> {
     const query = `
       UPDATE tiktok_upload_jobs
-      SET status = $1, 
-          tiktok_video_id = COALESCE($2, tiktok_video_id),
-          error_message = COALESCE($3, error_message),
-          uploaded_at = CASE WHEN $1 = 'published' THEN CURRENT_TIMESTAMP ELSE uploaded_at END,
+      SET status = $1::varchar, 
+          tiktok_video_id = COALESCE($2::varchar, tiktok_video_id),
+          error_message = COALESCE($3::text, error_message),
+          uploaded_at = CASE WHEN $1::varchar = 'published' THEN CURRENT_TIMESTAMP ELSE uploaded_at END,
           updated_at = CURRENT_TIMESTAMP
-      WHERE id = $4
+      WHERE id = $4::uuid
       RETURNING id, user_id, carousel_id, tiktok_account_id, video_file_path, title, 
                 description, status, tiktok_video_id, scheduled_at, uploaded_at, 
                 error_message, retry_count, created_at, updated_at

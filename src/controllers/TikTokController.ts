@@ -32,7 +32,9 @@ class TikTokController {
         state,
         redirect_uri as string
       );
-      const isMock = authUrl.includes('mock=1') || !process.env.TIKTOK_CLIENT_KEY;
+      const rawKey = process.env.TIKTOK_CLIENT_KEY;
+      const isMockKey = !rawKey || rawKey.trim() === '' || rawKey.trim().startsWith('your_');
+      const isMock = authUrl.includes('mock=1') || isMockKey;
 
       res.status(200).json({
         status: 'success',

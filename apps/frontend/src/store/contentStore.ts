@@ -36,6 +36,7 @@ interface ContentState {
   createSlide: (carouselId: string, data: Partial<Slide>) => Promise<Slide>;
   updateSlide: (slideId: string, data: Partial<Slide>) => Promise<void>;
   deleteSlide: (slideId: string) => Promise<void>;
+  reorderSlides: (carouselId: string, orderedIds: string[]) => Promise<void>;
 
   // Template actions
   fetchTemplates: () => Promise<void>;
@@ -280,6 +281,23 @@ export const useContentStore = create<ContentState>((set, get) => ({
     }
   },
 
+  reorderSlides: async (carouselId, orderedIds) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await apiClient.put<{ slides: Slide[] }>(
+        `${API_ENDPOINTS.CONTENT.CAROUSELS}/${carouselId}/slides/reorder`,
+        { orderedIds }
+      );
+      const slides = response.data?.slides;
+      if (slides) set({ slides });
+    } catch (error: any) {
+      set({ error: error.message || 'Failed to reorder slides' });
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
   // Template actions
   fetchTemplates: async () => {
     set({ isLoading: true, error: null });
@@ -331,13 +349,15 @@ export const useContentStore = create<ContentState>((set, get) => ({
     }
   },
 
-  // Upload actions
+  // Upload actions (legacy — delegate to TikTok flow; keep for backward compat, include required fields)
   createUploadJob: async (carouselId, accountId) => {
     set({ isLoading: true, error: null });
     try {
       const response = await apiClient.post<{ job: UploadJob }>(API_ENDPOINTS.TIKTOK.UPLOAD_JOBS, {
         carousel_id: carouselId,
         tiktok_account_id: accountId,
+        video_file_path: 'placeholder.mp4',
+        title: 'Carousel upload',
       });
       const newJob = response.data?.job;
       if (newJob) {

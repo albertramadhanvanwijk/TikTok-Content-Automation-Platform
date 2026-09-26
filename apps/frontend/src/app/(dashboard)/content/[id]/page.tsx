@@ -91,15 +91,14 @@ export default function CarouselEditorPage() {
 
     setSlides(updatedSlides);
 
-    // Persist new order to backend
+    // Persist new order atomically (avoids UNIQUE constraint collisions)
     try {
-      for (const slide of updatedSlides) {
-        await updateSlide(slide.id, { slide_number: slide.slide_number });
-      }
+      const { reorderSlides } = useContentStore.getState();
+      // use store directly to avoid closure stale updateSlide loop
+      await reorderSlides(carouselId, updatedSlides.map((s) => s.id));
       toast.success('Order updated', 'Slide positions saved');
     } catch (err: any) {
-      toast.error('Reorder failed', 'Could not save new order');
-      // Revert on failure
+      toast.error('Reorder failed', err.message || 'Could not save new order');
       setSlides(slides);
     }
   };

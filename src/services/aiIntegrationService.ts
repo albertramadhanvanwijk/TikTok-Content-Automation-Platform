@@ -46,12 +46,21 @@ class AIIntegrationService {
     };
   }
 
+  private isMockKey(value: string | undefined): boolean {
+    if (!value) return true;
+    const v = value.trim();
+    if (v === '') return true;
+    if (v.startsWith('your_')) return true;
+    if (v === 'your_openai_api_key' || v === 'your_notion_api_key' || v === 'your_tiktok_api_key') return true;
+    return false;
+  }
+
   private isOpenAIMock(): boolean {
-    return !process.env.OPENAI_API_KEY;
+    return this.isMockKey(process.env.OPENAI_API_KEY);
   }
 
   private isNotionMock(): boolean {
-    return !process.env.NOTION_API_KEY;
+    return this.isMockKey(process.env.NOTION_API_KEY);
   }
 
   /**

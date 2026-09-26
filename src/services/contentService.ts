@@ -183,6 +183,46 @@ class ContentService {
     }
   }
 
+  async updateCarousel(
+    carouselId: string,
+    updates: Partial<{ title: string; description: string; category: string; tags: string[]; template_id: string }>
+  ): Promise<Carousel> {
+    try {
+      const existing = await contentRepository.getCarouselById(carouselId);
+      if (!existing) throw new Error('Carousel not found');
+      const updated = await contentRepository.updateCarousel(carouselId, updates);
+      logger.info(`Carousel updated: ${carouselId}`);
+      return updated;
+    } catch (error) {
+      logger.error('Error updating carousel', error);
+      throw error;
+    }
+  }
+
+  async deleteCarousel(carouselId: string): Promise<void> {
+    try {
+      const existing = await contentRepository.getCarouselById(carouselId);
+      if (!existing) throw new Error('Carousel not found');
+      await contentRepository.deleteCarousel(carouselId);
+      logger.info(`Carousel deleted: ${carouselId}`);
+    } catch (error) {
+      logger.error('Error deleting carousel', error);
+      throw error;
+    }
+  }
+
+  async deleteTemplate(templateId: string): Promise<void> {
+    try {
+      const existing = await contentRepository.getTemplateById(templateId);
+      if (!existing) throw new Error('Template not found');
+      await contentRepository.deleteTemplate(templateId);
+      logger.info(`Template deleted: ${templateId}`);
+    } catch (error) {
+      logger.error('Error deleting template', error);
+      throw error;
+    }
+  }
+
   // ===== SLIDE SERVICE =====
 
   async createSlide(
@@ -235,6 +275,20 @@ class ContentService {
       logger.info(`Slide deleted: ${slideId}`);
     } catch (error) {
       logger.error('Error deleting slide', error);
+      throw error;
+    }
+  }
+
+  async reorderSlides(carouselId: string, orderedIds: string[]): Promise<Slide[]> {
+    try {
+      const carousel = await contentRepository.getCarouselById(carouselId);
+      if (!carousel) throw new Error('Carousel not found');
+      if (!orderedIds || orderedIds.length === 0) throw new Error('orderedIds is required');
+      const slides = await contentRepository.reorderSlides(carouselId, orderedIds);
+      logger.info(`Slides reordered for carousel ${carouselId}`);
+      return slides;
+    } catch (error) {
+      logger.error('Error reordering slides', error);
       throw error;
     }
   }
