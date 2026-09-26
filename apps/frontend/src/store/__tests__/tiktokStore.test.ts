@@ -18,6 +18,10 @@ describe('tiktokStore', () => {
     await expect(useTikTokStore.getState().createUploadJob('', 'a1')).rejects.toBeDefined();
     await expect(useTikTokStore.getState().createUploadJob('c1', '')).rejects.toBeDefined();
   });
+  it('createUploadJob rejects scheduled_at in the past', async () => {
+    const past = new Date(Date.now() - 60000).toISOString();
+    await expect(useTikTokStore.getState().createUploadJob('c1', 'a1', past)).rejects.toThrow(/future/i);
+  });
   it('getAuthUrl returns url', async () => {
     m.get.mockResolvedValueOnce({ data: { auth_url: 'http://localhost:3001/tiktok/callback?mock=1', state: 's1' } } as any);
     const url = await useTikTokStore.getState().getAuthUrl('http://localhost:3001/tiktok/callback');

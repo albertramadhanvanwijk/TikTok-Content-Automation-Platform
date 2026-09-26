@@ -9,7 +9,7 @@ import { useAIStore } from '@/store/aiStore';
 import { GenerateResult } from '@/types';
 
 export default function AIStudioPage() {
-  const { lastResult } = useAIStore();
+  const { lastResult, isGenerating, error, clearError } = useAIStore();
   const [tab, setTab] = useState<'generate' | 'notion' | 'tools'>('generate');
   const [localResult, setLocalResult] = useState<GenerateResult | null>(null);
 
@@ -42,6 +42,15 @@ export default function AIStudioPage() {
         ))}
       </div>
 
+      {error && (
+        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 flex items-center justify-between gap-3" role="alert">
+          <span>{error}</span>
+          <button onClick={() => clearError()} className="shrink-0 rounded border border-red-200 bg-white px-3 py-1 text-xs font-medium hover:bg-red-50">
+            Dismiss
+          </button>
+        </div>
+      )}
+
       {tab === 'generate' && (
         <div className="space-y-6">
           <GenerateForm
@@ -49,7 +58,23 @@ export default function AIStudioPage() {
               setLocalResult(r);
             }}
           />
-          {activeResult && <GenerateResultView result={activeResult} />}
+          {isGenerating && !activeResult && (
+            <div className="grid gap-3 md:grid-cols-2">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="h-32 animate-pulse rounded-xl border border-border bg-gray-100" />
+              ))}
+            </div>
+          )}
+          {activeResult ? (
+            <GenerateResultView result={activeResult} />
+          ) : (
+            !isGenerating && (
+              <div className="rounded-xl border border-dashed border-border bg-white p-8 text-center">
+                <p className="text-sm text-text-secondary">No carousel generated yet</p>
+                <p className="text-xs text-text-tertiary mt-1">Fill the topic above and click Generate — in mock mode a dummy carousel will be created so you can continue to Content → TikTok.</p>
+              </div>
+            )
+          )}
         </div>
       )}
 

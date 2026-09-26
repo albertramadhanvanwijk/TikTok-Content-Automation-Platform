@@ -6,9 +6,8 @@ import { useContentStore } from '@/store/contentStore';
 import { toast } from '@/store/toastStore';
 
 export default function UploadJobForm({ onCreated }: { onCreated?: () => void }) {
-  const { createUploadJob } = useTikTokStore();
+  const { createUploadJob, accounts, fetchAccounts } = useTikTokStore();
   const { carousels, fetchCarousels } = useContentStore();
-  const { accounts, fetchAccounts } = useTikTokStore();
   const [carouselId, setCarouselId] = useState('');
   const [accountId, setAccountId] = useState('');
   const [scheduledAt, setScheduledAt] = useState('');
